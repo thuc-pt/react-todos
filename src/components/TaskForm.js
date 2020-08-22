@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ClassNames from 'classnames';
+import {connect} from 'react-redux';
+import * as actions from '../actions/index';
 
 class TaskForm extends Component {
   constructor(props) {
@@ -13,29 +15,19 @@ class TaskForm extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.taskNew && !nextProps.taskEdit) {
-      return {
-        id: '',
-        name: !prevState.id ? prevState.name : '',
-        status: !prevState.id ? prevState.status : false
-      };
-    }
     if (nextProps.taskEdit.id !== prevState.id) {
       return {
         id: nextProps.taskEdit.id,
         name: nextProps.taskEdit.name,
         status: nextProps.taskEdit.status,
+        errorName: false
       };
     }
-    return null
+    return null;
   }
 
   onCloseForm = () => {
-    this.setState({
-      name: '',
-      status: false
-    });
-    this.props.onListenClose();
+    this.props.onCloseForm();
   }
 
   onChangeValue = (event) => {
@@ -58,7 +50,10 @@ class TaskForm extends Component {
       this.setState({
         errorName: true
       });
-    } else this.props.onListenSubmit(this.state);
+    } else {
+      this.props.onSaveTask(this.state);
+      this.onCloseForm();
+    }
   }
 
   render() {
@@ -92,4 +87,20 @@ class TaskForm extends Component {
   }
 }
 
-export default TaskForm;
+const mapStateToProps = (state) => {
+  return {
+    taskEdit: state.taskEdit
+  }
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSaveTask: (task) => {
+      dispatch(actions.saveTask(task))
+    },
+    onCloseForm: () => {
+      dispatch(actions.closeForm())
+    }
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskForm);

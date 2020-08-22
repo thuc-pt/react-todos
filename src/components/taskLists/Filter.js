@@ -1,33 +1,37 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import * as actions from '../../actions/index';
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filName: '',
-      filStatus: -1
+      name: '',
+      status: -1
     }
   }
 
   onChangeFilter = async(event) => {
     let key = event.target.name;
     let value = event.target.value;
-    await this.setState({
-      [key]: value
-    });
-    this.props.listProps.onListenFilter(this.state.filName, parseInt(this.state.filStatus));
+    await this.setState({[key]: value});
+    let filter = {
+      name: this.state.name,
+      status: parseInt(this.state.status)
+    }
+    this.props.onFilterTask(filter);
   }
 
   render() {
-    let {filName, filStatus} = this.state;
+    let {name, status} = this.state;
     return (
       <tr className="text-center">
         <td></td>
         <td>
-          <input type="text" className="form-control" name="filName" value={filName} onChange={this.onChangeFilter} />
+          <input type="text" className="form-control" name="name" value={name} onChange={this.onChangeFilter} />
         </td>
         <td>
-          <select className="form-control" name="filStatus" value={filStatus} onChange={this.onChangeFilter}>
+          <select className="form-control" name="status" value={status} onChange={this.onChangeFilter}>
             <option value={-1}>All</option>
             <option value={0}>Open</option>
             <option value={1}>Done</option>
@@ -39,4 +43,12 @@ class Filter extends Component {
   }
 }
 
-export default Filter;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onFilterTask: (filter) => {
+      dispatch(actions.filterTask(filter))
+    }
+  }
+};
+
+export default connect(null, mapDispatchToProps)(Filter);

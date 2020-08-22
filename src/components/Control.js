@@ -8,13 +8,13 @@ class Control extends Component {
     return (
       <div className="row">
         <div className="col-12 mrg-bottom--25">
-          <AddTask listProps={this.props} />
+          <AddTask />
         </div>
         <div className="col-md-8 mrg-bottom--25">
-          <Search listProps={this.props} />
+          <Search />
         </div>
         <div className="col-md-4 mrg-bottom--25">
-          <Sort listProps={this.props} />
+          <Sort />
         </div>
       </div>
     );

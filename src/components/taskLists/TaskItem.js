@@ -1,17 +1,21 @@
-import React, { Component } from 'react';
-import ClassNames from 'classnames'
+import React, {Component} from 'react';
+import ClassNames from 'classnames';
+import {connect} from 'react-redux';
+import * as actions from '../../actions/index';
 
 class TaskItem extends Component {
   onUpdateStatus(task) {
-    this.props.listProps.onListenUpdateStatus(task.id)
+    this.props.onUpdateStatus(task.id)
   }
 
   onDeleteTask(task) {
-    this.props.listProps.onListenDelete(task.id)
+    this.props.onDeleteTask(task.id);
+    this.props.onCloseForm();
   }
 
   onEditTask = (task) => {
-    this.props.listProps.onListenEdit(task.id)
+    this.props.onOpenForm();
+    this.props.onEditTask(task);
   }
 
   render() {
@@ -34,4 +38,24 @@ class TaskItem extends Component {
   }
 }
 
-export default TaskItem;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onUpdateStatus: (id) => {
+      dispatch(actions.updateStatusTask(id))
+    },
+    onDeleteTask: (id) => {
+      dispatch(actions.deleteTask(id))
+    },
+    onCloseForm: () => {
+      dispatch(actions.closeForm())
+    },
+    onOpenForm: () => {
+      dispatch(actions.openForm())
+    },
+    onEditTask: (task) => {
+      dispatch(actions.editTask(task))
+    }
+  }
+};
+
+export default connect(null, mapDispatchToProps)(TaskItem);

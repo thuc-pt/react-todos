@@ -1,8 +1,14 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import * as actions from '../../actions/index';
+
 
 class AddTask extends Component {
   onToggleForm = () => {
-    this.props.listProps.onListenAdd()
+    if (this.props.taskEdit.id)
+      this.props.onClearForm({id: '', name: '', status: false});
+    else
+      this.props.onToggleForm();
   }
 
   render() {
@@ -10,4 +16,21 @@ class AddTask extends Component {
   }
 }
 
-export default AddTask;
+const mapStateToProps = (state) => {
+  return {
+    taskEdit: state.taskEdit
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onToggleForm: () => {
+      dispatch(actions.toggleForm())
+    },
+    onClearForm: (task) => {
+      dispatch(actions.editTask(task))
+    }
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTask);
